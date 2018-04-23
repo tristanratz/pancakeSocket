@@ -5,13 +5,14 @@
 
 #include <arpa/inet.h>
 #include "Client.h"
+#include "config.h"
 
 static int idCount = 0;
 
 Client::Client(const char *hostname, long int portno) : id(idCount)
 {
     idCount++;
-    sockID = socket(AF_INET6, SOCK_STREAM, 0);
+    sockID = socket(ADRESS_TYPE, COMM_TYPE, 0);
 
     if (sockID < 0)
         perror("ERROR opening socket");
@@ -21,7 +22,7 @@ Client::Client(const char *hostname, long int portno) : id(idCount)
     in_addr_t ia = inet_addr(hostname);
     memcpy((char*)&serv_addr.sin_addr, &ia, sizeof(ia)); //copies the value of the second argument to the first for (third argument) bytes
 
-    serv_addr.sin_family = AF_INET6;
+    serv_addr.sin_family = COMM_TYPE;
     serv_addr.sin_port = htonl(portno);
 
 }

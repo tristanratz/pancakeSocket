@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netdb.h>
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -16,15 +18,16 @@ using namespace std;
 class Server
 {
     public:
-        Server(const char *name);
-        string gethostname() const;
+        Server(int port);
+        int getPort() const;
 
 
     private:
-        string name;
+        int s;
+        int port;
         int portno;
-        hostent* h;
-
+        int createClientQueue(int waitingClients);
+        int acceptNewClient();
 };
 
 
