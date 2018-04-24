@@ -20,26 +20,28 @@ using namespace std;
 class Client
 {
     public:
+        Client(int socket, sockaddr_in server);
         Client(const char *domain);
         Client(const char *hostname, long portno);
 
-        int getID() const;
         void closeSocket();
         bool connectSocket();
 
         bool sendText(const char *text);
         bool sendData(const void *data);
 
+        bool recievedData();
+        bool socketClosed();
+
         char recieve();
 
         static char * getHostnameByDomain(const char *domain);
 
-    private:
-        int id;
-        int serverPort;
+    protected:
         int sockID;
         sockaddr_in serv_addr;
-        char recievedData;
+        char recData;
+        bool sockClosed;
 };
 
 

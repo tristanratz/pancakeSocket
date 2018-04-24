@@ -9,7 +9,6 @@ using namespace std;
 
 Server::Server(int p) : port(p)
 {
-    struct sockaddr_in server;
 
     memset(&server, 0, sizeof(server));
     server.sin_family = ADRESS_TYPE;
@@ -37,8 +36,10 @@ int Server::createClientQueue(int waitingClients)
  *
  * @return new Client Connection (Socket)
  */
-int Server::acceptNewClient()
+Client* Server::acceptNewClient()
 {
     struct sockaddr client;
-    return accept(s, (struct sockaddr*)&client, sizeof(client));
+    int c = accept(s, (struct sockaddr*)&client, (socklen_t *)sizeof(client));
+
+    return new Client(c, server);
 }

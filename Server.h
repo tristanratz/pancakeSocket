@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 
+#include "Client.h"
+
 using namespace std;
 
 
@@ -21,13 +23,14 @@ class Server
         Server(int port);
         int getPort() const;
 
-
-    private:
+    protected:
         int s;
         int port;
         int portno;
+        struct sockaddr_in server;
+
         int createClientQueue(int waitingClients);
-        int acceptNewClient();
+        Client* acceptNewClient();
 };
 
 

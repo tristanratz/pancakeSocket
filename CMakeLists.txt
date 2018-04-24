@@ -3,7 +3,7 @@ project(pancakeSocket)
 
 set(CMAKE_CXX_STANDARD 11)
 
-file(GLOB SOURCE_FILES *.cpp)
+file(GLOB SOURCE_FILES *.cpp /LinkedList/*.cpp)
 
 #set(SOURCE_FILES *.cpp)
 

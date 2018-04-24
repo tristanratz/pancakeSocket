@@ -9,10 +9,14 @@
 
 static int idCount = 0;
 
-Client::Client(const char *hostname, long int portno) : id(idCount)
+Client::Client(int socket, sockaddr_in server) : sockID(socket), serv_addr(server) {
+
+}
+
+Client::Client(const char *hostname, long int portno)
 {
-    idCount++;
     sockID = socket(ADRESS_TYPE, COMM_TYPE, 0);
+    sockClosed = false;
 
     if (sockID < 0)
         perror("ERROR opening socket");
@@ -25,11 +29,6 @@ Client::Client(const char *hostname, long int portno) : id(idCount)
     serv_addr.sin_family = COMM_TYPE;
     serv_addr.sin_port = htonl(portno);
 
-}
-
-int Client::getID() const
-{
-    return id;
 }
 
 bool Client::sendText(const char *text)
@@ -53,6 +52,7 @@ bool Client::sendData(const void *data)
 void Client::closeSocket()
 {
     close(this->sockID);
+    sockClosed = true;
 }
 
 bool Client::connectSocket()
@@ -65,12 +65,22 @@ bool Client::connectSocket()
 
 char Client::recieve()
 {
-    recv(sockID, (char *)recievedData, sizeof(recievedData), 0);
+    recv(sockID, (char *)recData, sizeof(recData), 0);
 
-    return recievedData;
+    return recData;
 }
 
 char* Client::getHostnameByDomain(const char *domain)
 {
     return gethostbyname(domain)->h_name;
+}
+
+bool Client::socketClosed()
+{
+    return sockClosed;
+}
+
+bool Client::recievedData()
+{
+    return false;
 }
