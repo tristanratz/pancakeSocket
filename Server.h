@@ -30,7 +30,7 @@ class Server
         struct sockaddr_in server;
 
         int createClientQueue(int waitingClients);
-        Client* acceptNewClient();
+        int acceptNewClient();
 };
 
 

@@ -9,62 +9,125 @@
 
 using namespace std;
 
+
+
+template <class T>
+class ListNode {
+    public:
+        ListNode(T *obj) : object(obj) {}
+
+        ListNode<T> *next;
+        T *object;
+
+};
+
 template <class T>
 class LinkedList
 {
     protected:
-        T object;
-        LinkedList<T> * next;
+        ListNode<T> *first;
+        ListNode<T> *last;
+        int currentPos;
+        ListNode<T> *current;
+
+        ListNode<T>* getNode(int x)
+        {
+            int z = 0;
+            ListNode<T> *c = first;
+
+            if (currentPos == x) {
+                return current;
+            } else if (currentPos < x) {
+                z = currentPos;
+                c = first;
+            } else {
+                c = current;
+            }
+
+            for (int i = z; i <= (x-z); i++) {
+                if (i == x) {
+                    currentPos = i;
+                    current = c;
+                    return current;
+                }
+
+                if (c->next == NULL)
+                {
+                    return NULL;
+                } else
+                {
+                    c = c->next;
+                }
+            }
+            return NULL;
+        }
 
     public:
-        LinkedList(T obj) : object(obj) {}
-        int add(T obj) {
-            if (next == NULL)
+        LinkedList() {}
+        LinkedList(T obj) : first(ListNode<T>(obj)), last(first), current(first) {}
+        ~LinkedList()
+        {
+            for (int i = 0; i < size(); i++)
             {
-                next = new LinkedList(obj);
-                return 1;
-            }
-            else
-            {
-                return next->add(obj)+1;
+                delete(remove(0));
             }
         }
 
-        // TODO improve
-        LinkedList* remove(int id) {
-            if (id == 0) {
-                return next;
-            } else if (id == 1) {
-                LinkedList* x = next;
-                next = remove(id-1);
-                return x;
+        void add(T &obj) {
+            ListNode<T> *n = new ListNode<T>(&obj);
+            n->object = &obj;
+            if (first == NULL) {
+                first = n;
+                last = first;
+                return;
             }
-            return remove(id-1);
+
+            last->next = n;
+            last = last->next;
         }
 
-        T getObject()
-        {
-            return object;
+
+        T remove(int id) {
+            ListNode<T> *p = getNode(id-1);
+            ListNode<T> *d = getNode(id);
+
+            p->next = d->next;
+
+            T obj = d->object;
+            delete(d);
+            return obj;
         }
 
-        // TODO improve
-        int getID(T obj)
-        {
-            return 0;
+        T* get(int i) {
+            return getNode(i)->object;
         }
 
-        LinkedList<T>* getNext()
+        int getID(const T &obj)
         {
-            return next;
+            int i = 0;
+            ListNode<T> *n = first;
+
+            while (obj != *n->object) {
+                i++;
+                if (n->next == NULL)
+                    return -1;
+                n = n->next;
+            }
+            return i;
         }
 
         unsigned int size()
         {
-            if (next == NULL) {
-                return 1;
-            } else {
-                return next->size()+1;
+            int i = 1;
+            ListNode<T> *n = first;
+
+            while (n == NULL)
+            {
+                i++;
+                n = n->next;
             }
+
+            return i;
         }
 
 };

@@ -7,6 +7,7 @@
 
 #include <thread>
 #include <stdlib.h>
+#include <list>
 
 #include "Server.h"
 #include "LinkedList/LinkedList.h"
@@ -17,15 +18,17 @@ class ThreadedServer : Server
         typedef LinkedList<Client *> ClientList;
 
     protected:
-        thread *serverThreads[2];
-        ClientList *cl;
+        thread serverThreads[2];
+        LinkedList<Client> cl;
 
         void * startAcceptLoop();
         void * startRecievingLoop();
-        void recievedData(Client *c);
+        void recievedData(Client &c);
 
     public:
         ThreadedServer(int port);
+
+        void recievedData(Client *c);
 };
 
 

@@ -34,12 +34,12 @@ int Server::createClientQueue(int waitingClients)
 
 /**
  *
- * @return new Client Connection (Socket)
+ * @return new Socket Number to connect to
  */
-Client* Server::acceptNewClient()
+int Server::acceptNewClient()
 {
     struct sockaddr client;
     int c = accept(s, (struct sockaddr*)&client, (socklen_t *)sizeof(client));
 
-    return new Client(c, server);
+    return c;
 }

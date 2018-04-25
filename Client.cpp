@@ -28,7 +28,6 @@ Client::Client(const char *hostname, long int portno)
 
     serv_addr.sin_family = COMM_TYPE;
     serv_addr.sin_port = htonl(portno);
-
 }
 
 bool Client::sendText(const char *text)
@@ -39,7 +38,7 @@ bool Client::sendText(const char *text)
 bool Client::sendData(const void *data)
 {
     int x = send(sockID, data, sizeof(data), 0);
-    if (x < 0) {
+    if (x != sizeof(data)) {
         perror("Error beim senden der Daten");
         return false;
     } else if (x < sizeof(data)) {
