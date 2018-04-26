@@ -14,7 +14,7 @@ Client::Client(int socket, sockaddr_in server, ThreadedServer *tS) : sockID(sock
     connected = false;
 }
 
-Client::Client(const char *hostname, long int portno) : l("Client"), delegate(NULL)
+Client::Client(const char *hostname, long int portno) : l("Client"), delegate(nullptr)
 {
     sockID = socket(ADRESS_TYPE, COMM_TYPE, 0);
     connected = false;
@@ -45,12 +45,7 @@ bool Client::connectSocket()
     return true;
 }
 
-bool Client::sendText(const char *text)
-{
-    return sendData(text);
-}
-
-bool Client::sendData(const void *data)
+bool Client::sendText(const char *data)
 {
     int x = send(sockID, data, sizeof(data), 0);
     if (x != sizeof(data)) {
@@ -60,24 +55,41 @@ bool Client::sendData(const void *data)
         perror("Nicht alle Daten wurden versendet");
         return false;
     }
+
+    //l.info("Sended Data: " + string(data));
     return true;
+}
+
+bool Client::sendData(const void *data)
+{
+    return false;
 }
 
 void Client::closeSocket()
 {
     close(this->sockID);
     connected = false;
-    if (delegate != NULL)
+    if (delegate != nullptr)
         delegate->removeClient(this);
 }
 
-string Client::recieve()
+string Client::receive()
 {
-    char recData[BUFFER_SIZE];
+    char* recData[BUFFER_SIZE];
     l.info("Recieving Data...");
+    int r;
     if (connected)
-        recLen = recv(sockID, recData, sizeof(recData), 0);
-    return string(recData);
+        r = recv(sockID, recData, BUFFER_SIZE, 0);
+    if (r > 0 && r < BUFFER_SIZE)
+    {
+        recData[r] = (char *)'\0';
+        return string(*recData);
+    } else if (r == 0)
+        closeSocket();
+    else
+        perror("Can not receive Data");
+
+    return string();
 }
 
 char* Client::getHostnameByDomain(const char *domain)

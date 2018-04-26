@@ -15,13 +15,12 @@ int main(int argc, char **argv)
     sleep(1);
     c.connectSocket();
 
-    l.ok("Terminated");
     int i = 0;
     while (true){
         string s = "Hello World! Nr. " + to_string(i);
         i++;
         //l.info(s);
-        c.sendText(s.c_str());
+        c.sendText("WHOOP");
         sleep(THREAD_WAIT);
 
     }

@@ -37,7 +37,7 @@ class Client
 
         bool isConnected();
 
-        string recieve();
+        string receive();
 
         static char * getHostnameByDomain(const char *domain);
 

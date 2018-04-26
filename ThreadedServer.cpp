@@ -49,11 +49,7 @@ void ThreadedServer::startReceivingLoop() {
             for (int i = 0; i < cl.size(); i++)
             {
                 this->receivedData(cl.get(i));
-                l.info("Data recieved");
-
-                if (cl.get(i)->isConnected()) {
-                    delete cl.get(i);
-                }
+                l.info("Data received");
             }
 
             //l.ok("1: Go to sleep");
@@ -63,7 +59,6 @@ void ThreadedServer::startReceivingLoop() {
     } catch (const std::exception& e) {
         perror("ERROR");
         cout << e.what();
-        exit(-1);
     }
 }
 
@@ -81,7 +76,6 @@ void ThreadedServer::startAcceptLoop() {
                 Client c = Client(i, server, this);
                 l.info("Client connected");
                 cl.add(c);
-            } else {
             }
 
             //l.ok("2: Go to sleep");
@@ -91,15 +85,14 @@ void ThreadedServer::startAcceptLoop() {
     } catch (const std::exception& e) {
         perror("ERROR");
         cout << e.what();
-        exit(-1);
     }
 }
 
 
 void ThreadedServer::receivedData(Client *c) {
     // Here you have to write content
-    function(c);
-    l.info("Client Message: " + string(c->recieve()));
+    //function(c);
+    l.info("Client Message: " + c->receive());
 }
 
 void ThreadedServer::removeClient(Client *c) {

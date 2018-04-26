@@ -17,7 +17,7 @@ using namespace std;
 template <class T>
 class ListNode {
     public:
-        ListNode(T *obj) : object(obj) {}
+        ListNode(T *obj) : next(nullptr), object(obj) {}
 
         ListNode<T> *next;
         T *object;
@@ -53,20 +53,20 @@ class LinkedList
                     return current;
                 }
 
-                if (c->next == NULL)
+                if (c->next == nullptr)
                 {
-                    return NULL;
+                    return nullptr;
                 } else
                 {
                     c = c->next;
                 }
             }
-            return NULL;
+            return nullptr;
         }
 
     public:
-        LinkedList() : l("LinkedList") , first(NULL), last(NULL), current(NULL) {}
-        LinkedList(T obj) : l("LinkedList") , first(ListNode<T>(obj)), last(first), current(first) {}
+        LinkedList() : l("LinkedList") , first(nullptr), last(nullptr), current(nullptr) {}
+        //LinkedList(T obj) : l("LinkedList") , first(ListNode<T>(obj)), last(first), current(first) {}
         ~LinkedList()
         {
             for (int i = 0; i < size(); i++)
@@ -77,7 +77,7 @@ class LinkedList
 
         void add(T &obj) {
             ListNode<T> *n = new ListNode<T>(&obj);
-            if (first == NULL) {
+            if (first == nullptr) {
                 first = n;
                 last = first;
                 current = first;
@@ -89,10 +89,29 @@ class LinkedList
 
 
         T* remove(int id) {
-            ListNode<T> *p = getNode(id-1);
-            ListNode<T> *d = getNode(id);
+            ListNode<T> *d, *p;
 
-            p->next = d->next;
+            if (size() >= id)
+                d = getNode(id);
+            else
+                return nullptr;
+
+            if (size() > 1)
+            {
+                if (id > 0)
+                {
+                    p = getNode(id - 1);
+                    if (size() > 2)
+                        p->next = d->next;
+                    else
+                        p->next = nullptr;
+                } else {
+                    first = d->next;
+                }
+            } else {
+                first = nullptr;
+                last = nullptr;
+            }
 
             T * obj = d->object;
             delete(d);
@@ -112,7 +131,7 @@ class LinkedList
 
             while (&obj != n->object) {
                 i++;
-                if (n->next == NULL)
+                if (n->next == nullptr)
                     return -1;
                 n = n->next;
             }
@@ -124,13 +143,10 @@ class LinkedList
             int i = 0;
             ListNode<T> *n = first;
 
-            while (n != NULL)
+            while (n != nullptr)
             {
                 i++;
-                if (n->next != NULL)
-                    n = n->next;
-                else
-                    break;
+                n = n->next;
             }
 
             return i;
