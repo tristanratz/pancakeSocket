@@ -12,3 +12,16 @@ TEST(List, add)
 
   EXPECT_EQ(2, *list.get(0));
 }
+
+TEST(List, remove)
+{
+  LinkedList<int> list;
+  int a = 2;
+  list.add(a);
+  int b = 3;
+  list.add(b);
+
+  EXPECT_EQ(2, list.size());
+  list.remove(0);
+  EXPECT_EQ(2, *list.get(3));
+}
