@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include "config.h"
+class ThreadedServer;
 
 using namespace std;
 
@@ -25,7 +26,7 @@ using namespace std;
 class Client
 {
     public:
-        Client(int socket, sockaddr_in server);
+        Client(int socket, sockaddr_in server, ThreadedServer *d);
         Client(const char *hostname, long portno);
 
         void closeSocket();
@@ -34,10 +35,9 @@ class Client
         bool sendText(const char *text);
         bool sendData(const void *data);
 
-        bool recievedData();
-        bool socketClosed();
+        bool isConnected();
 
-        char * recieve();
+        string recieve();
 
         static char * getHostnameByDomain(const char *domain);
 
@@ -46,8 +46,8 @@ class Client
         int recLen;
         Log l;
         sockaddr_in serv_addr;
-        char recData[BUFFER_SIZE];
-        bool sockClosed;
+        bool connected;
+        ThreadedServer *delegate;
 };
 
 

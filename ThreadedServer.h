@@ -39,6 +39,8 @@ class ThreadedServer : Server
         ~ThreadedServer();
 
         void receivedData(Client *c);
+
+    void removeClient(Client *cl);
 };
 
 

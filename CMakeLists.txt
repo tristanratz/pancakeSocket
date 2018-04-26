@@ -9,8 +9,8 @@ file(GLOB SOURCE_FILES *.cpp)
 
 add_executable(pancakeSocket ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/Log/Log.cpp)
 
-find_library (LIBSTDCXX NAMES stdc++)
+#find_library (LIBSTDCXX NAMES stdc++)
 
-add_compile_options(-stdlib=libstdc++)
+#add_compile_options(-stdlib=libstdc++)
 
-target_link_libraries(${PROJECT_NAME} ${LIBSTDCXX} ${YOUR_OTHER_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}  ${YOUR_OTHER_LIBRARIES} pthread)

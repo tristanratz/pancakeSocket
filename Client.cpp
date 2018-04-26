@@ -5,17 +5,19 @@
 
 #include <arpa/inet.h>
 #include "Client.h"
+#include <cstring>
+#include "ThreadedServer.h"
 
 static int idCount = 0;
 
-Client::Client(int socket, sockaddr_in server) : sockID(socket), serv_addr(server) , l("Client") {
-
+Client::Client(int socket, sockaddr_in server, ThreadedServer *tS) : sockID(socket), serv_addr(server) , l("Client"), delegate(tS) {
+    connected = false;
 }
 
-Client::Client(const char *hostname, long int portno) : l("Client")
+Client::Client(const char *hostname, long int portno) : l("Client"), delegate(NULL)
 {
     sockID = socket(ADRESS_TYPE, COMM_TYPE, 0);
-    sockClosed = false;
+    connected = false;
 
     if (sockID < 0)
         perror("ERROR opening socket");
@@ -37,6 +39,7 @@ bool Client::connectSocket()
         perror("Connection not found");
         return false;
     }
+    connected = true;
     l.info("Connected.");
 
     return true;
@@ -63,12 +66,18 @@ bool Client::sendData(const void *data)
 void Client::closeSocket()
 {
     close(this->sockID);
-    sockClosed = true;
+    connected = false;
+    if (delegate != NULL)
+        delegate->removeClient(this);
 }
 
-char* Client::recieve()
+string Client::recieve()
 {
-    return recData;
+    char recData[BUFFER_SIZE];
+    l.info("Recieving Data...");
+    if (connected)
+        recLen = recv(sockID, recData, sizeof(recData), 0);
+    return string(recData);
 }
 
 char* Client::getHostnameByDomain(const char *domain)
@@ -76,17 +85,7 @@ char* Client::getHostnameByDomain(const char *domain)
     return gethostbyname(domain)->h_name;
 }
 
-bool Client::socketClosed()
+bool Client::isConnected()
 {
-    return sockClosed;
-}
-
-bool Client::recievedData()
-{
-    recLen = recv(sockID, recData, sizeof(recData), 0);
-
-    if (recLen > 0)
-        return true;
-    else
-        return false;
+    return connected;
 }

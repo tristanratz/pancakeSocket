@@ -5,6 +5,8 @@
 #include "Server.h"
 #include "config.h"
 #include <errno.h>
+#include <cstring>
+
 
 using namespace std;
 

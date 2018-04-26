@@ -16,7 +16,7 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     try
     {
         function  = [] (Client * c) -> void {};
-        serverThreads[0] = std::thread(std::bind(&ThreadedServer::startAcceptLoop, this));
+        serverThreads[0] = std::thread(&ThreadedServer::startAcceptLoop, this);
         serverThreads[0].detach();
         l.info("Initialized first Thread");
         serverThreads[1] = std::thread(&ThreadedServer::startReceivingLoop, this);
@@ -29,24 +29,9 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     l.info("Initialized both Threads");
 }
 
-ThreadedServer::ThreadedServer(int port, void (*func)(Client *)) : Server(port)
+ThreadedServer::ThreadedServer(int port, void (*func)(Client *)) : ThreadedServer(port)
 {
-    l = Log("Threaded Server");
-    l.info("Initializing Server...");
-    try
-    {
-        function = func;
-        serverThreads[0] = std::thread(std::bind(&ThreadedServer::startAcceptLoop, this));
-        serverThreads[0].detach();
-        l.info("Initialized first Thread");
-        serverThreads[1] = std::thread(&ThreadedServer::startReceivingLoop, this);
-        serverThreads[1].detach();
-    } catch (const std::exception& e) {
-        perror("ERROR");
-        cout << e.what();
-        exit(-1);
-    }
-    l.info("Initialized both Threads");
+    function = func;
 }
 
 ThreadedServer::~ThreadedServer()
@@ -63,13 +48,11 @@ void ThreadedServer::startReceivingLoop() {
         {
             for (int i = 0; i < cl.size(); i++)
             {
-                if (cl.get(i)->recievedData())
-                {
-                    this->receivedData(cl.get(i));
-                    l.info("Data recieved");
-                }
-                if (cl.get(i)->socketClosed()) {
-                    delete(cl.get(i));
+                this->receivedData(cl.get(i));
+                l.info("Data recieved");
+
+                if (cl.get(i)->isConnected()) {
+                    delete cl.get(i);
                 }
             }
 
@@ -95,7 +78,7 @@ void ThreadedServer::startAcceptLoop() {
             if (i >= 0)
             {
                 l.info("Client ID: " + to_string(i));
-                Client c = Client(i, server);
+                Client c = Client(i, server, this);
                 l.info("Client connected");
                 cl.add(c);
             } else {
@@ -117,4 +100,8 @@ void ThreadedServer::receivedData(Client *c) {
     // Here you have to write content
     function(c);
     l.info("Client Message: " + string(c->recieve()));
+}
+
+void ThreadedServer::removeClient(Client *c) {
+    this->cl.remove(cl.getID(*c));
 }

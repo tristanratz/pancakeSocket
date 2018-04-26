@@ -1,15 +1,17 @@
 #include <iostream>
+#include <signal.h>
 #include "ThreadedServer.h"
 #include "Client.h"
 
-int main()
+int main(int argc, char **argv)
 {
+    int port = 7575;
+
     Log l = Log("main");
     l.ok("Started");
-    int p = 1999;
-    ThreadedServer(1999);
+    ThreadedServer a(port);
     l.ok("Initialized Threaded Server");
-    Client c = Client("127.0.0.1", 1999);
+    Client c = Client("127.0.0.1", port);
     sleep(1);
     c.connectSocket();
 

@@ -109,7 +109,7 @@ class LinkedList
             int i = 0;
             ListNode<T> *n = first;
 
-            while (obj != *n->object) {
+            while (&obj != n->object) {
                 i++;
                 if (n->next == NULL)
                     return -1;
