@@ -116,6 +116,5 @@ void ThreadedServer::startAcceptLoop() {
 void ThreadedServer::receivedData(Client *c) {
     // Here you have to write content
     function(c);
-    cout << c->recieve();
-
+    l.info("Client Message: " + string(c->recieve()));
 }

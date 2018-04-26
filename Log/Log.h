@@ -17,8 +17,6 @@
 
 using namespace std;
 
-
-mutex lgMtx;
 /*
  * Log class
  */
@@ -67,6 +65,7 @@ class Log
         static bool useLongLogNames, useColors;
         static int  maxNameLongLen;
         void print(string tag, string text, char tagMask) const;
+        static mutex lgMtx;
 };
 
 

@@ -18,7 +18,7 @@ int main()
     while (true){
         string s = "Hello World! Nr. " + to_string(i);
         i++;
-        l.info(s);
+        //l.info(s);
         c.sendText(s.c_str());
         sleep(THREAD_WAIT);
 

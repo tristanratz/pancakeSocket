@@ -121,21 +121,15 @@ class LinkedList
         unsigned int size()
         {
             int i = 0;
-            ListNode<T> *n;
+            ListNode<T> *n = first;
 
-            if (first != NULL)
-            {
-                n = first;
-            } else {
-                n = NULL;
-            }
             while (n != NULL)
             {
                 i++;
-                if (n->next)
+                if (n->next != NULL)
                     n = n->next;
                 else
-                    n = NULL;
+                    break;
             }
 
             return i;
