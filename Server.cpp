@@ -20,7 +20,7 @@ Server::Server(int p) : port(p)
 
     s = socket(ADRESS_TYPE, COMM_TYPE, 0);
 
-    if(::bind( s, (const struct sockaddr *)&server, sizeof(server)) < 0)
+    if(bind( s, (const struct sockaddr *)&server, sizeof(server)) < 0)
     {
         perror("Server failed");
     }

@@ -9,6 +9,7 @@
 #ifndef PANCAKESOCKET_LINKEDLIST_H
 #define PANCAKESOCKET_LINKEDLIST_H
 
+#include <Log/Log.h>
 #include <stdlib.h>
 
 using namespace std;
