@@ -4,6 +4,7 @@
 
 #include "Server.h"
 #include "config.h"
+#include <errno.h>
 
 using namespace std;
 
@@ -17,9 +18,12 @@ Server::Server(int p) : port(p)
 
     s = socket(ADRESS_TYPE, COMM_TYPE, 0);
 
-    if(::bind( s, (struct sockaddr*)&server, sizeof( server)) < 0) {
-        printf("Error: Cannot bind Server");
+    if(::bind( s, (const struct sockaddr *)&server, sizeof(server)) < 0)
+    {
+        perror("Server failed");
     }
+
+    createClientQueue(CLIENT_QUEUE);
 }
 
 int Server::getPort() const
@@ -39,7 +43,11 @@ int Server::createClientQueue(int waitingClients)
 int Server::acceptNewClient()
 {
     struct sockaddr client;
-    int c = accept(s, (struct sockaddr*)&client, (socklen_t *)sizeof(client));
+    socklen_t t = sizeof(client);
+    int c = accept(s, (struct sockaddr*)&client, &t);
+
+    if (c < 0)
+        perror("Cannot connect Client");
 
     return c;
 }

@@ -1,6 +1,10 @@
-//
-// Created by Tristan Ratz on 23.04.18.
-//
+/**
+ * LinkedList
+ *
+ * A LinkedList for dynamicly, efficiently accessing data, stored in it
+ * Created by Pancake Software, Tristan Ratz on 22.04.2018
+ *
+*/
 
 #ifndef PANCAKESOCKET_LINKEDLIST_H
 #define PANCAKESOCKET_LINKEDLIST_H
@@ -8,8 +12,6 @@
 #include <stdlib.h>
 
 using namespace std;
-
-
 
 template <class T>
 class ListNode {
@@ -25,6 +27,7 @@ template <class T>
 class LinkedList
 {
     protected:
+        Log l;
         ListNode<T> *first;
         ListNode<T> *last;
         int currentPos;
@@ -34,7 +37,6 @@ class LinkedList
         {
             int z = 0;
             ListNode<T> *c = first;
-
             if (currentPos == x) {
                 return current;
             } else if (currentPos < x) {
@@ -43,7 +45,6 @@ class LinkedList
             } else {
                 c = current;
             }
-
             for (int i = z; i <= (x-z); i++) {
                 if (i == x) {
                     currentPos = i;
@@ -63,8 +64,8 @@ class LinkedList
         }
 
     public:
-        LinkedList() {}
-        LinkedList(T obj) : first(ListNode<T>(obj)), last(first), current(first) {}
+        LinkedList() : l("LinkedList") , first(NULL), last(NULL), current(NULL) {}
+        LinkedList(T obj) : l("LinkedList") , first(ListNode<T>(obj)), last(first), current(first) {}
         ~LinkedList()
         {
             for (int i = 0; i < size(); i++)
@@ -75,31 +76,32 @@ class LinkedList
 
         void add(T &obj) {
             ListNode<T> *n = new ListNode<T>(&obj);
-            n->object = &obj;
             if (first == NULL) {
                 first = n;
                 last = first;
+                current = first;
                 return;
             }
-
             last->next = n;
             last = last->next;
         }
 
 
-        T remove(int id) {
+        T* remove(int id) {
             ListNode<T> *p = getNode(id-1);
             ListNode<T> *d = getNode(id);
 
             p->next = d->next;
 
-            T obj = d->object;
+            T * obj = d->object;
             delete(d);
             return obj;
         }
 
         T* get(int i) {
-            return getNode(i)->object;
+            ListNode<T> *n = getNode(i);
+            T *o = n->object;
+            return o;
         }
 
         int getID(const T &obj)
@@ -118,13 +120,22 @@ class LinkedList
 
         unsigned int size()
         {
-            int i = 1;
-            ListNode<T> *n = first;
+            int i = 0;
+            ListNode<T> *n;
 
-            while (n == NULL)
+            if (first != NULL)
+            {
+                n = first;
+            } else {
+                n = NULL;
+            }
+            while (n != NULL)
             {
                 i++;
-                n = n->next;
+                if (n->next)
+                    n = n->next;
+                else
+                    n = NULL;
             }
 
             return i;

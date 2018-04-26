@@ -5,15 +5,14 @@
 
 #include <arpa/inet.h>
 #include "Client.h"
-#include "config.h"
 
 static int idCount = 0;
 
-Client::Client(int socket, sockaddr_in server) : sockID(socket), serv_addr(server) {
+Client::Client(int socket, sockaddr_in server) : sockID(socket), serv_addr(server) , l("Client") {
 
 }
 
-Client::Client(const char *hostname, long int portno)
+Client::Client(const char *hostname, long int portno) : l("Client")
 {
     sockID = socket(ADRESS_TYPE, COMM_TYPE, 0);
     sockClosed = false;
@@ -21,13 +20,26 @@ Client::Client(const char *hostname, long int portno)
     if (sockID < 0)
         perror("ERROR opening socket");
 
-    serv_addr = sockaddr_in();
+    //serv_addr = sockaddr_in();
+    memset( &serv_addr, 0, sizeof (serv_addr));
 
     in_addr_t ia = inet_addr(hostname);
     memcpy((char*)&serv_addr.sin_addr, &ia, sizeof(ia)); //copies the value of the second argument to the first for (third argument) bytes
 
-    serv_addr.sin_family = COMM_TYPE;
-    serv_addr.sin_port = htonl(portno);
+    serv_addr.sin_family = ADRESS_TYPE;
+    serv_addr.sin_port = htons(portno);
+}
+
+bool Client::connectSocket()
+{
+    if (connect(this->sockID, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        l.warn("Unable to connect to server.");
+        perror("Connection not found");
+        return false;
+    }
+    l.info("Connected.");
+
+    return true;
 }
 
 bool Client::sendText(const char *text)
@@ -54,18 +66,8 @@ void Client::closeSocket()
     sockClosed = true;
 }
 
-bool Client::connectSocket()
+char* Client::recieve()
 {
-    if (connect(this->sockID, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        return false;
-    }
-    return true;
-}
-
-char Client::recieve()
-{
-    recv(sockID, (char *)recData, sizeof(recData), 0);
-
     return recData;
 }
 
@@ -81,5 +83,10 @@ bool Client::socketClosed()
 
 bool Client::recievedData()
 {
-    return false;
+    recLen = recv(sockID, recData, sizeof(recData), 0);
+
+    if (recLen > 0)
+        return true;
+    else
+        return false;
 }

@@ -3,11 +3,11 @@ project(pancakeSocket)
 
 set(CMAKE_CXX_STANDARD 11)
 
-file(GLOB SOURCE_FILES *.cpp /LinkedList/*.cpp)
+file(GLOB SOURCE_FILES *.cpp)
 
 #set(SOURCE_FILES *.cpp)
 
-add_executable(pancakeSocket ${SOURCE_FILES})
+add_executable(pancakeSocket ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/Log/Log.cpp)
 
 find_library (LIBSTDCXX NAMES stdc++)
 
