@@ -22,11 +22,11 @@
 class ThreadedServer : Server
 {
     protected:
-        std::thread serverThreads[2];
+        std::thread mainThread;
         LinkedList<Client> cl;
 
         void startAcceptLoop();
-        void startReceivingLoop();
+        void mainThreadLoop();
         void receivedData(Client &c);
 
         void (*function)(Client *);
@@ -38,7 +38,7 @@ class ThreadedServer : Server
         ThreadedServer(int port,  void (*func)(Client *));
         ~ThreadedServer();
 
-        void receivedData(Client *c);
+        void receivingThreadLoop(Client *c);
 
     void removeClient(Client *cl);
 };

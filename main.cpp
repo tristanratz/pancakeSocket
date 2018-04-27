@@ -3,26 +3,43 @@
 #include "ThreadedServer.h"
 #include "Client.h"
 
-int main(int argc, char **argv)
-{
-    int port = 7575;
+char* receive(int cl);
 
+int main() {
     Log l = Log("main");
     l.ok("Started");
-    ThreadedServer a(port);
-    l.ok("Initialized Threaded Server");
+    int port = 2001;
+
+    void (*respond_function) (Client*) = [] (Client *c) {
+        Log log = Log("Server-Resp");
+        string *receivedData = c->receive();
+        // Here you have to write content
+        log.info("Client Message: " + *receivedData);
+
+        string datatosend = "What does \"" + *receivedData + "\" mean?";
+        log.ok("Server sends!");
+        sleep(1);
+        c->sendText(datatosend);
+    };
+
+    ThreadedServer a(port, respond_function);
+
     Client c = Client("127.0.0.1", port);
-    sleep(1);
     c.connectSocket();
 
-    int i = 0;
-    while (true){
-        string s = "Hello World! Nr. " + to_string(i);
-        i++;
-        //l.info(s);
-        c.sendText("WHOOP");
-        sleep(THREAD_WAIT);
+    sleep(1);
 
-    }
-    return 0;
+    l.ok("Client sends!");
+    c.sendText("Hello World!");
+    sleep(1);
+    l.info("Client recieved: " + *c.receive());
+
+    sleep(1);
+
+    l.ok("Client sends!");
+    c.sendText("Hello World again!");
+    sleep(1);
+    l.info("Client recieved: " + *c.receive());
+
+    while(1) {}
 }

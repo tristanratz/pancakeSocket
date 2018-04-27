@@ -23,6 +23,8 @@ class Server
         Server(int port);
         int getPort() const;
 
+        int acceptNewClient();
+
     protected:
         int s;
         int port;
@@ -30,7 +32,6 @@ class Server
         struct sockaddr_in server;
 
         int createClientQueue(int waitingClients);
-        int acceptNewClient();
 };
 
 

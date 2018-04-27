@@ -7,7 +7,8 @@
 TEST(List, add)
 {
   LinkedList<int> list;
-  int a = 2;
+  int &a = *(int*)malloc(sizeof(int));
+  a = 2;
   list.add(a);
 
   EXPECT_EQ(2, *list.get(0));
@@ -16,9 +17,9 @@ TEST(List, add)
 TEST(List, remove)
 {
   LinkedList<int> list;
-  int a = 2;
+  int &a = *(int*)malloc(sizeof(int));
   list.add(a);
-  int b = 3;
+  int &b = *(int*)malloc(sizeof(int));
   list.add(b);
 
   EXPECT_EQ(2, list.size());

@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <string>
+#include <cstring>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -26,24 +27,23 @@ using namespace std;
 class Client
 {
     public:
-        Client(int socket, sockaddr_in server, ThreadedServer *d);
+        Client(int socket, sockaddr_in &server, ThreadedServer *d);
         Client(const char *hostname, long portno);
 
         void closeSocket();
         bool connectSocket();
 
-        bool sendText(const char *text);
-        bool sendData(const void *data);
+        bool sendText(const string data);
+        bool sendData(const char *data);
 
         bool isConnected();
 
-        string receive();
+        string * receive();
 
         static char * getHostnameByDomain(const char *domain);
 
     protected:
         int sockID;
-        int recLen;
         Log l;
         sockaddr_in serv_addr;
         bool connected;

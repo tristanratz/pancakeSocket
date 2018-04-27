@@ -71,7 +71,7 @@ class LinkedList
         {
             for (int i = 0; i < size(); i++)
             {
-                delete(remove(0));
+                remove(0);
             }
         }
 
@@ -90,6 +90,7 @@ class LinkedList
 
         T* remove(int id) {
             ListNode<T> *d, *p;
+            //l.info("Removed node");
 
             if (size() >= id)
                 d = getNode(id);
@@ -120,7 +121,11 @@ class LinkedList
 
         T* get(int i) {
             ListNode<T> *n = getNode(i);
-            T *o = n->object;
+            T *o;
+            if (n != nullptr)
+                o = n->object;
+            else
+                o = nullptr;
             return o;
         }
 

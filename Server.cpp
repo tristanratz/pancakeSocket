@@ -20,7 +20,7 @@ Server::Server(int p) : port(p)
 
     s = socket(ADRESS_TYPE, COMM_TYPE, 0);
 
-    if(bind( s, (const struct sockaddr *)&server, sizeof(server)) < 0)
+    if(::bind( s, (const struct sockaddr *)&server, sizeof(server)) < 0)
     {
         perror("Server failed");
     }
@@ -44,9 +44,9 @@ int Server::createClientQueue(int waitingClients)
  */
 int Server::acceptNewClient()
 {
-    struct sockaddr client;
-    socklen_t t = sizeof(client);
-    int c = accept(s, (struct sockaddr*)&client, &t);
+    sockaddr *client;
+    socklen_t t = sizeof(*client);
+    int c = accept(s, client, &t);
 
     if (c < 0)
         perror("Cannot connect Client");

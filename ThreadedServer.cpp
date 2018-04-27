@@ -16,17 +16,14 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     try
     {
         function  = [] (Client * c) -> void {};
-        serverThreads[0] = std::thread(&ThreadedServer::startAcceptLoop, this);
-        serverThreads[0].detach();
-        l.info("Initialized first Thread");
-        serverThreads[1] = std::thread(&ThreadedServer::startReceivingLoop, this);
-        serverThreads[1].detach();
+        mainThread = std::thread(&ThreadedServer::mainThreadLoop, this);
+        mainThread.detach();
     } catch (const std::exception& e) {
         perror("ERROR");
         cout << e.what();
         exit(-1);
     }
-    l.info("Initialized both Threads");
+    l.info("Initialized Thread");
 }
 
 ThreadedServer::ThreadedServer(int port, void (*func)(Client *)) : ThreadedServer(port)
@@ -40,61 +37,40 @@ ThreadedServer::~ThreadedServer()
 }
 
 
-void ThreadedServer::startReceivingLoop() {
+void ThreadedServer::mainThreadLoop() {
     try
     {
-        l.ok("Started first thread");
-        while (true)
+        for (int i = 0; i < 100; i++)
         {
-            for (int i = 0; i < cl.size(); i++)
+            int clientSocket = this->acceptNewClient();
+            if (clientSocket >= 0)
             {
-                this->receivedData(cl.get(i));
-                l.info("Data received");
+                l.info("Server-Client ID: " + to_string(clientSocket));
+                Client *c = new Client(clientSocket, server, this);
+                l.info("Client connected");
+                cl.add(*c);
+                std::thread t1([=]() { this->receivingThreadLoop(cl.get(cl.getID(*c))); });
+                t1.detach();
             }
 
             //l.ok("1: Go to sleep");
             sleep(THREAD_WAIT);
         }
-        return;
     } catch (const std::exception& e) {
         perror("ERROR");
         cout << e.what();
     }
 }
 
-void ThreadedServer::startAcceptLoop() {
-    try
+void ThreadedServer::receivingThreadLoop(Client *c) {
+    while (c != nullptr)
     {
-        l.ok("Started second Thread");
-
-        while (true)
-        {
-            int i = this->acceptNewClient();
-            if (i >= 0)
-            {
-                l.info("Client ID: " + to_string(i));
-                Client c = Client(i, server, this);
-                l.info("Client connected");
-                cl.add(c);
-            }
-
-            //l.ok("2: Go to sleep");
-            sleep(THREAD_WAIT);
-        }
-        return;
-    } catch (const std::exception& e) {
-        perror("ERROR");
-        cout << e.what();
+        function(c);
+        sleep(THREAD_WAIT);
     }
-}
-
-
-void ThreadedServer::receivedData(Client *c) {
-    // Here you have to write content
-    //function(c);
-    l.info("Client Message: " + c->receive());
 }
 
 void ThreadedServer::removeClient(Client *c) {
+    l.info("Remove Client");
     this->cl.remove(cl.getID(*c));
 }
