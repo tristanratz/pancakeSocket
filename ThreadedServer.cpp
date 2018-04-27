@@ -15,7 +15,7 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     l.info("Initializing Server...");
     try
     {
-        function  = [] (Client * c) -> void {};
+        function  = [] (Client *c) {};
         mainThread = std::thread(&ThreadedServer::mainThreadLoop, this);
         mainThread.detach();
     } catch (const std::exception& e) {
@@ -26,9 +26,9 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     l.info("Initialized Thread");
 }
 
-ThreadedServer::ThreadedServer(int port, void (*func)(Client *)) : ThreadedServer(port)
+ThreadedServer::ThreadedServer(int port, std::function<void(Client *)> f) : ThreadedServer(port)
 {
-    function = func;
+    function = f;
 }
 
 ThreadedServer::~ThreadedServer()

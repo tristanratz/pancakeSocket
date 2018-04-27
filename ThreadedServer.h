@@ -29,13 +29,13 @@ class ThreadedServer : Server
         void mainThreadLoop();
         void receivedData(Client &c);
 
-        void (*function)(Client *);
+        std::function<void(Client *)> function;
 
         Log l;
 
     public:
         ThreadedServer(int port);
-        ThreadedServer(int port,  void (*func)(Client *));
+        ThreadedServer(int port,  std::function<void(Client *)> f);
         ~ThreadedServer();
 
         void receivingThreadLoop(Client *c);
