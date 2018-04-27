@@ -43,7 +43,6 @@ c.connectSocket();
 c.sendText("Hello World!");
 cout << *c.receive() << "\n";
 
-cout <c.sendText("Hello World again!");
+c.sendText("Hello World again!");
 cout << *c.receive() << "\n";
-    
 ```
