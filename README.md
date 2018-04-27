@@ -17,7 +17,7 @@ string Client::receive()
 ```
 
 ## Sample
-Here is a simple example of the usage, which also can be found in the main.cpp
+Here is a simple example of the usage, which also can be found in the main.cpp:
 
 **Server:**
 ```
@@ -44,6 +44,6 @@ c.sendText("Hello World!");
 cout << *c.receive() << "\n";
 
 cout <c.sendText("Hello World again!");
-cout << *c.receive() << "\n";< 
+cout << *c.receive() << "\n";
     
 ```
