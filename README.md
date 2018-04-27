@@ -19,9 +19,9 @@ string Client::receive()
 ## Sample
 Here is a simple example of the usage, which also can be found in the main.cpp
 
-Server:
+###Server:
 ```
-int port = 2001;
+int port = 1997;
 
 void (*respond_function) (Client*) = [] (Client *c) 
 {
@@ -35,7 +35,7 @@ void (*respond_function) (Client*) = [] (Client *c)
 ThreadedServer a(port, respond_function);
 ```
 
-Client:
+###Client:
 ```
 Client c = Client("127.0.0.1", port);
 c.connectSocket();
