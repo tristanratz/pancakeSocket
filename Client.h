@@ -30,24 +30,70 @@ class Client
         Client(int socket, sockaddr_in &server, ThreadedServer *d);
         Client(const char *hostname, long portno);
 
-        void closeSocket();
+
+        /**
+         * connectSocket
+         * Connecting socket to server
+         *
+         * @return true on success
+         */
         bool connectSocket();
 
+        /**
+         * closeSocket
+         * Closing socket and deleting itself
+         */
+        void closeSocket();
+
+        /**
+         * sendText
+         * Sending a string
+         *
+         * @param data
+         * @return true on success
+         */
         bool sendText(const string data);
+
+
+        /**
+         * sendData
+         * Send data
+         *
+         * @param data
+         * @return true on sucess
+         */
         bool sendData(const char *data);
 
+        /**
+        * isConnected
+        *
+        * @return true when connected
+        */
         bool isConnected();
 
+        /**
+         * receive
+         * Blocking function wich returns a string with the received data
+         *
+         * @return recieved string
+         */
         string * receive();
 
+        /**
+         * getHostnameByDomain
+         * Returns an ip adress of you submit an domain (i.e. localhost)
+         *
+         * @param domain
+         * @return An ip adress
+         */
         static char * getHostnameByDomain(const char *domain);
 
     protected:
-        int sockID;
-        Log l;
-        sockaddr_in serv_addr;
-        bool connected;
-        ThreadedServer *delegate;
+        int sockID;                 // socket
+        Log l;                      // A Logger
+        sockaddr_in serv_addr;      // The client config
+        bool connected;             // If it is connected
+        ThreadedServer *delegate;   // Delegate, where it has to be deleted on socket closure
 };
 
 

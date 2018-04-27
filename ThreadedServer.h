@@ -22,25 +22,52 @@
 class ThreadedServer : Server
 {
     protected:
-        std::thread mainThread;
-        LinkedList<Client> cl;
+        std::thread mainThread;     // the main thread for accepting new clients
+        LinkedList<Client> cl;      // the client list with all clients
+        Log l;                      // a logging object
 
-        void startAcceptLoop();
+        /**
+         * mainThreadLoop
+         *
+         * the main thread loop where new clients get accepted
+         */
         void mainThreadLoop();
-        void receivedData(Client &c);
 
+        /**
+         * the function which gets called in a own thread all the time to receive data
+         */
         std::function<void(Client *)> function;
 
-        Log l;
-
     public:
+        /**
+         * ThreadedServer
+         *
+         * Initializes and opens new multi threaded server
+         *
+         * @param port portNr of the server
+         */
         ThreadedServer(int port);
+
+        /**
+         * ThreadedServer
+         *
+         * Initializes and opens new multi threaded server
+         *
+         * @param port portNr of the server
+         * @param f the function which will be called all the time to receive data
+         */
         ThreadedServer(int port,  std::function<void(Client *)> f);
-        ~ThreadedServer();
 
         void receivingThreadLoop(Client *c);
 
-    void removeClient(Client *cl);
+        /**
+         * removeClient
+         *
+         * removes (from cl) and  deinitializes client
+         *
+         * @param cl client to be removed
+         */
+        void removeClient(Client *cl);
 };
 
 
