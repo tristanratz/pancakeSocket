@@ -1,5 +1,5 @@
 # pancakeSocket
-Server Client Library
+Server Client Library (UNIX only at the moment)
 
 Made with love and pancakes
 
