@@ -8,7 +8,7 @@ How to use it
 1. Initialize a Client-Object with IP-Adress, Port Number of the Server.
 2. Initialize a Server-Object with the Port which should be open and a function which should be started as a thread to recieve data from the client.
 3. Use the parameter (Client \* c) has  of your function to communicate with the client
-4. To communicate just call one of those functions:
+4. To communicate just call one of these functions:
 
 ```
 bool Client::sendText(string data)
