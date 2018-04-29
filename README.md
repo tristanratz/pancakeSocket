@@ -10,39 +10,43 @@ How to use it
 3. Use the parameter (Client \* c) has  of your function to communicate with the client
 4. To communicate just call one of these functions:
 
-```
-bool Client::sendText(string data)
-bool Client::sendData(const char *data)
-string Client::receive()
+```c++
+bool Client::sendText(string data);
+bool Client::sendData(const char *data);
+string Client::receive();
 ```
 
 ## Sample
 Here is a simple example of the usage, which also can be found in the main.cpp:
 
 **Server:**
-```
-int port = 1997;
-
-void (*respond_function) (Client*) = [] (Client *c) 
+```c++
 {
-  string *receivedData = c->receive();
-  cout << receivedData;
-  
-  string datatosend = "What does \"" + *receivedData + "\" mean?";  
-  c->sendText(datatosend);
-};
+  int port = 1997;
 
-ThreadedServer a(port, respond_function);
+  void (*respond_function) (Client*) = [] (Client *c) 
+  {
+    string *receivedData = c->receive();
+    cout << receivedData;
+
+    string datatosend = "What does \"" + *receivedData + "\" mean?";  
+    c->sendText(datatosend);
+  };
+
+  ThreadedServer a(port, respond_function);
+}
 ```
 
 **Client:**
-```
-Client c = Client("127.0.0.1", port);
-c.connectSocket();
+```c++
+{
+  Client c = Client("127.0.0.1", port);
+  c.connectSocket();
 
-c.sendText("Hello World!");
-cout << *c.receive() << "\n";
+  c.sendText("Hello World!");
+  cout << *c.receive() << "\n";
 
-c.sendText("Hello World again!");
-cout << *c.receive() << "\n";
+  c.sendText("Hello World again!");
+  cout << *c.receive() << "\n";
+}
 ```
