@@ -10,7 +10,7 @@ How to use it
 3. Use the parameter (Client \* c) has  of your function to communicate with the client
 4. To communicate just call one of these functions:
 
-```
+```c++
 bool Client::sendText(string data)
 bool Client::sendData(const char *data)
 string Client::receive()
@@ -20,7 +20,7 @@ string Client::receive()
 Here is a simple example of the usage, which also can be found in the main.cpp:
 
 **Server:**
-```
+```c++
 int port = 1997;
 
 void (*respond_function) (Client*) = [] (Client *c) 
@@ -36,7 +36,7 @@ ThreadedServer a(port, respond_function);
 ```
 
 **Client:**
-```
+```c++
 Client c = Client("127.0.0.1", port);
 c.connectSocket();
 
