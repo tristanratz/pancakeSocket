@@ -73,12 +73,13 @@ int Server::createClientQueue(int waitingClients)
  */
 int Server::acceptNewClient()
 {
-    sockaddr *client;
-    socklen_t t = sizeof(*client);
-    int c = accept(sockID, client, &t);
+    sockaddr client;
+    socklen_t t = sizeof(sockaddr);
+    int c = accept(sockID, &client, &t);
 
-    if (c < 0)
+    if (c < 0) {
         perror("Cannot connect Client");
+    }
 
     return c;
 }

@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <list>
 #include <iostream>
+#include <functional>
 
 #include "Server.h"
 #include "LinkedList/LinkedList.h"

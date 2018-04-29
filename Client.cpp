@@ -137,7 +137,7 @@ void Client::closeSocket()
  *
  * @return recieved string
  */
-string * Client::receive()
+string  Client::receive()
 {
 
     if (connected)
@@ -148,13 +148,13 @@ string * Client::receive()
         if (receiveSize > 0 && receiveSize < BUFFER_SIZE)
         {
             //recData[receiveSize] = '\0';
-            return new string(recData);
+            return string(recData);
         } else if (receiveSize == 0)
             closeSocket();
         else
             perror("Can not receive Data");
     }
-    return new string();
+    return string();
 }
 
 /**

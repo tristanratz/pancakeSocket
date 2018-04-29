@@ -8,15 +8,15 @@ char* receive(int cl);
 int main() {
     Log l = Log("main");
     l.ok("Started");
-    int port = 2004;
+    int port = 2006;
 
     std::function<void(Client&)> respond_function = [] (Client &c) {
         Log log = Log("Server-Resp");
-        string *receivedData = c.receive();
+        string receivedData = c.receive();
         // Here you have to write content
-        log.info("Client Message: " + *receivedData);
+        log.info("Client Message: " + receivedData);
 
-        string datatosend = "What does \"" + *receivedData + "\" mean?";
+        string datatosend = "What does \"" + receivedData + "\" mean?";
         log.ok("Server sends!");
         sleep(1);
         c.sendText(datatosend);
@@ -32,14 +32,14 @@ int main() {
     l.ok("Client sends!");
     c.sendText("Hello World!");
     sleep(1);
-    l.info("Client recieved: " + *c.receive());
+    l.info("Client recieved: " + c.receive());
 
     sleep(1);
 
     l.ok("Client sends!");
     c.sendText("Hello World again!");
     sleep(1);
-    l.info("Client recieved: " + *c.receive());
+    l.info("Client recieved: " + c.receive());
 
     while(1) {
         sleep(THREAD_WAIT);

@@ -92,7 +92,7 @@ class Client
          *
          * @return recieved string
          */
-        string * receive();
+        string receive();
 
         /**
          * getHostnameByDomain
