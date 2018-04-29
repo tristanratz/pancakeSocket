@@ -27,7 +27,22 @@ using namespace std;
 class Client
 {
     public:
-        Client(int socket, sockaddr_in &server, ThreadedServer *d);
+        /**
+         *
+         * @param socket If there is a existing socket sockID
+         * @param server Configuration of the connection
+         * @param delegate The delegate
+         */
+        Client(int socket, sockaddr_in &server, ThreadedServer *delegate);
+
+        /**
+         * Client
+         *
+         * Standard way of creating a client
+         *
+         * @param hostname An IP Adress to connect to
+         * @param portno The port number to connect to
+         */
         Client(const char *hostname, long portno);
 
 
@@ -87,6 +102,11 @@ class Client
          * @return An ip adress
          */
         static char * getHostnameByDomain(const char *domain);
+
+        bool operator != (const Client &c) const
+        {
+                return c.sockID != this->sockID;
+        }
 
     protected:
         int sockID;                 // socket

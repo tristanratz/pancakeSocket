@@ -14,13 +14,25 @@
 
 using namespace std;
 
+template< class T >
+struct TypeIsInt
+{
+    static const bool value = false;
+};
+
+template<>
+struct TypeIsInt< int >
+{
+    static const bool value = true;
+};
+
 template <class T>
 class ListNode {
     public:
-        ListNode(T *obj) : next(nullptr), object(obj) {}
+        ListNode(T obj) : next(nullptr), object(obj) {}
 
         ListNode<T> *next;
-        T *object;
+        T object;
 
 };
 
@@ -42,11 +54,12 @@ class LinkedList
                 return current;
             } else if (currentPos < x) {
                 z = currentPos;
-                c = first;
-            } else {
                 c = current;
+            } else {
+                c = first;
             }
-            for (int i = z; i <= (x-z); i++) {
+            for (int i = z; i <= (x-z)+1;) {
+
                 if (i == x) {
                     currentPos = i;
                     current = c;
@@ -54,12 +67,10 @@ class LinkedList
                 }
 
                 if (c->next == nullptr)
-                {
                     return nullptr;
-                } else
-                {
-                    c = c->next;
-                }
+
+                c = c->next;
+                i++;
             }
             return nullptr;
         }
@@ -75,12 +86,13 @@ class LinkedList
             }
         }
 
-        void add(T &obj) {
-            ListNode<T> *n = new ListNode<T>(&obj);
+        void add(T obj) {
+            ListNode<T> *n = new ListNode<T>(obj);
             if (first == nullptr) {
                 first = n;
                 last = first;
                 current = first;
+                currentPos = 0;
                 return;
             }
             last->next = n;
@@ -88,14 +100,31 @@ class LinkedList
         }
 
 
-        T* remove(int id) {
+        T remove(int id) {
             ListNode<T> *d, *p;
             //l.info("Removed node");
 
             if (size() >= id)
                 d = getNode(id);
             else
-                return nullptr;
+                throw out_of_range("Object out of range. Cannot remove item");
+
+            if (current == d) {
+                if (current == first)
+                {
+                    if (first->next == nullptr)
+                    {
+                        current = nullptr;
+                        currentPos = 0;
+                    } else
+                        current = first->next;
+                } else
+                {
+                    current = first;
+                    currentPos = 0;
+                }
+
+            }
 
             if (size() > 1)
             {
@@ -114,30 +143,36 @@ class LinkedList
                 last = nullptr;
             }
 
-            T * obj = d->object;
+            T obj = d->object;
             delete(d);
             return obj;
         }
 
-        T* get(int i) {
+        T& get(int i) {
+            if (size() < i)
+                throw out_of_range("Index out of range");
+
             ListNode<T> *n = getNode(i);
-            T *o;
-            if (n != nullptr)
-                o = n->object;
-            else
-                o = nullptr;
-            return o;
+
+            if (n == nullptr)
+                cout << "NULLPOINTER";
+
+            return n->object;
         }
 
         int getID(const T &obj)
         {
             int i = 0;
             ListNode<T> *n = first;
+            if constexpr (TypeIsInt<T>::value)
+                l.info("First value: " + to_string(n->object));
 
-            while (&obj != n->object) {
+            while (obj != (const T)n->object) {
                 i++;
+                if constexpr (TypeIsInt<T>::value)
+                    l.info("Search for "+ to_string(obj) + " candidate: " + to_string((int)n->object));
                 if (n->next == nullptr)
-                    return -1;
+                    throw out_of_range("Object not found");
                 n = n->next;
             }
             return i;

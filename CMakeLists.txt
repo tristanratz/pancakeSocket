@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 # get src files
 file(GLOB SOURCE_FILES *.cpp)
+file(GLOB LINKEDLIST LinkedList/*.cpp)
 file(GLOB TEST_FILES tests/*.cpp)
 
 # add dependencies
@@ -26,7 +27,7 @@ include_directories(${PROJECT_NAME}Test
 
 
 # app
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/Log/Log.cpp)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${LINKEDLIST} ${CMAKE_CURRENT_SOURCE_DIR}/Log/Log.cpp)
 target_link_libraries(${PROJECT_NAME}  pthread)
 
 # test
@@ -34,6 +35,7 @@ list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 add_definitions(-DBOOST_TEST_DYN_LINK)
 add_executable(${PROJECT_NAME}Test
         ${SOURCE_FILES}
+        ${LINKEDLIST}
         ${TEST_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/Log/Log.cpp)
 

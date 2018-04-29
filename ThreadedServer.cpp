@@ -24,7 +24,9 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
     {
         // Is ThrededServer is initialized whithout a receiving-handler
         // The receiving handler is set to an empty function
-        function  = [] (Client *c) {};
+        receiveHandler  = [] (Client &c) {};
+        onConnection  = [] (Client &c, LinkedList<Client>&) {};
+        onDisconnection  = [] (Client &c, LinkedList<Client>&) {};
 
         // Starts new thread for accepting clients
         mainThread = std::thread(&ThreadedServer::mainThreadLoop, this);
@@ -46,9 +48,9 @@ ThreadedServer::ThreadedServer(int port) : Server(port), cl() {
  * @param port portNr of the server
  * @param f the function which will be called all the time to receive data (receiving-handler)
  */
-ThreadedServer::ThreadedServer(int port, std::function<void(Client *)> f) : ThreadedServer(port)
+ThreadedServer::ThreadedServer(int port, std::function<void(Client &)> f) : ThreadedServer(port)
 {
-    function = f;
+    receiveHandler = f;
 }
 
 /**
@@ -68,22 +70,26 @@ void ThreadedServer::mainThreadLoop() {
                 l.info("Server-Client ID: " + to_string(clientSocket));
 
                 // creating new client
-                Client *c = new Client(clientSocket, server, this);
+                Client c(clientSocket, server, this);
                 l.info("Client connected");
 
+                // client is acceptet handler gets called
+                onConnection(c, cl);
+
                 // add to the list
-                cl.add(*c);
+                cl.add(c);
 
                 // create new thread for the client to recieve data
-                std::thread t1([=]() { this->receivingThreadLoop(cl.get(cl.getID(*c))); });
+                std::thread t1([=]() {
+                    this->receivingThreadLoop(cl.get(cl.getID(c)));
+                });
                 t1.detach();
             }
 
             sleep(THREAD_WAIT);
         }
-    } catch (const std::exception& e) {
-        perror("ERROR");
-        cout << e.what();
+    } catch (exception &e) {
+        l.err(e.what());
     }
 }
 
@@ -95,11 +101,11 @@ void ThreadedServer::mainThreadLoop() {
  *
  * @param c The client from which should be recieved data
  */
-void ThreadedServer::receivingThreadLoop(Client *c) {
-    while (c != nullptr)
+void ThreadedServer::receivingThreadLoop(Client &c) {
+    while (c.isConnected())
     {
         // the function which should handle the receiving
-        function(c);
+        receiveHandler(c);
 
         sleep(THREAD_WAIT);
     }
@@ -112,7 +118,19 @@ void ThreadedServer::receivingThreadLoop(Client *c) {
  *
  * @param c client which should be removed
  */
-void ThreadedServer::removeClient(Client *c) {
+void ThreadedServer::removeClient(Client &c) {
     l.info("Remove Client");
-    this->cl.remove(cl.getID(*c));
+    onDisconnection(c, cl);
+    this->cl.remove(cl.getID(c));
 }
+
+void ThreadedServer::setConnectionEvent(std::function<void(Client&, LinkedList<Client>&)> f)
+{
+    onConnection = f;
+}
+
+void ThreadedServer::setDisconnectionEvent(std::function<void(Client&, LinkedList<Client>&)> f)
+{
+    onDisconnection = f;
+}
+

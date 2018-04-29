@@ -148,9 +148,8 @@ void Log::print(string tag, string text, char tagMask) const
     char name[256];
     Log::lgMtx.lock();
     snprintf(name, 256, string("%-" + to_string(logNameShortLongest) + "s").c_str(), logNameShort.c_str());
-    Log::lgMtx.unlock();
     cout << "[ " << name << " ] " << tag << text  << endl;
-
+    Log::lgMtx.unlock();
     /*
     if (!useLongLogNames)
       cout << "[ " << logNameShort/*.substr(0, 14)*-/ << " ] " << tag << "" << text << endl;

@@ -8,12 +8,25 @@
 #include "ThreadedServer.h"
 
 static int idCount = 0;
-
-Client::Client(int socket, sockaddr_in &server, ThreadedServer *tS) : sockID(socket), serv_addr(server) , l("Client"), delegate(tS) {
+/**
+ *
+ * @param socket If there is a existing socket sockID
+ * @param server Configuration of the connection
+ * @param delegate The delegate
+ */
+Client::Client(int socket, sockaddr_in &server, ThreadedServer *delegate) : sockID(socket), serv_addr(server) , l("Client"), delegate(delegate) {
     // Already connected and in use with the server
     connected = true;
 }
 
+/**
+ * Client
+ *
+ * Standard way of creating a client
+ *
+ * @param hostname An IP Adress to connect to
+ * @param portno The port number to connect to
+ */
 Client::Client(const char *hostname, long int portno) : l("Client"), delegate(nullptr)
 {
     // Opening socket
@@ -115,7 +128,7 @@ void Client::closeSocket()
     close(this->sockID);
     connected = false;
     if (delegate != nullptr)
-        delegate->removeClient(this);
+        delegate->removeClient(*this);
 }
 
 /**
