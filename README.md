@@ -11,9 +11,9 @@ How to use it
 4. To communicate just call one of these functions:
 
 ```c++
-bool Client::sendText(string data)
-bool Client::sendData(const char *data)
-string Client::receive()
+bool Client::sendText(string data);
+bool Client::sendData(const char *data);
+string Client::receive();
 ```
 
 ## Sample
@@ -21,28 +21,32 @@ Here is a simple example of the usage, which also can be found in the main.cpp:
 
 **Server:**
 ```c++
-int port = 1997;
-
-void (*respond_function) (Client*) = [] (Client *c) 
 {
-  string *receivedData = c->receive();
-  cout << receivedData;
-  
-  string datatosend = "What does \"" + *receivedData + "\" mean?";  
-  c->sendText(datatosend);
-};
+  int port = 1997;
 
-ThreadedServer a(port, respond_function);
+  void (*respond_function) (Client*) = [] (Client *c) 
+  {
+    string *receivedData = c->receive();
+    cout << receivedData;
+
+    string datatosend = "What does \"" + *receivedData + "\" mean?";  
+    c->sendText(datatosend);
+  };
+
+  ThreadedServer a(port, respond_function);
+}
 ```
 
 **Client:**
 ```c++
-Client c = Client("127.0.0.1", port);
-c.connectSocket();
+{
+  Client c = Client("127.0.0.1", port);
+  c.connectSocket();
 
-c.sendText("Hello World!");
-cout << *c.receive() << "\n";
+  c.sendText("Hello World!");
+  cout << *c.receive() << "\n";
 
-c.sendText("Hello World again!");
-cout << *c.receive() << "\n";
+  c.sendText("Hello World again!");
+  cout << *c.receive() << "\n";
+}
 ```
